@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Constance</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos específicos para a estética da página de login */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffefef 0%, #fcf4f2 100%);
+      margin: 0;
+    }
+
+    .login-card {
+      background: var(--branco);
+      padding: 50px 30px;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(229, 152, 155, 0.15);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .login-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 25px;
+    }
+
+    .logo-container img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 4px solid white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      object-fit: cover;
+    }
+
+    .logo-container::after {
+      content: '';
+      position: absolute;
+      top: -5px; left: -5px; right: -5px; bottom: -5px;
+      border-radius: 50%;
+      border: 2px dashed var(--rosa-constance);
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    h2 {
+      color: var(--rosa-escuro);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      color: #999;
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 20px;
+      border: 1.5px solid #f0f0f0;
+      border-radius: 15px;
+      background: #fafafa;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      border-color: var(--rosa-constance);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(229, 152, 155, 0.1);
+      outline: none;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      border-radius: 15px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+      box-shadow: 0 10px 20px rgba(229, 152, 155, 0.3);
+    }
+
+    .toggle-text {
+      margin-top: 25px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .toggle-text span {
+      color: var(--rosa-escuro);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="logo-container">
+      <img src="CONSTANDCE.jpeg" alt="Logo Constance">
+    </div>
+    
+    <div id="loginArea">
+      <h2>Bem-vinda!</h2>
+      <p class="subtitle">Acesse o painel do seu brechó</p>
+      
+      <div class="input-group">
+        <input type="text" id="username" placeholder="Usuário">
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Sua senha">
+      </div>
+      
+      <button onclick="fazerLogin()" class="btn-primary btn-login">Entrar no Sistema</button>
+      
+      <p class="toggle-text">Não tem uma conta? 
+        <span onclick="mostrarRegistro()">Criar acesso</span>
+      </p>
+    </div>
+
+    <div id="regArea" style="display: none;">
+      <h2>Novo Acesso</h2>
+      <p class="subtitle">Cadastre um usuário administrativo</p>
+      
+      <div class="input-group">
+        <input type="text" id="newName" placeholder="Nome de usuário">
+      </div>
+      <div class="input-group">
+        <input type="password" id="newPass" placeholder="Defina uma senha">
+      </div>
+      
+      <button onclick="registrar()" class="btn-primary btn-login">Finalizar Cadastro</button>
+      
+      <p class="toggle-text">Já possui conta? 
+        <span onclick="location.reload()">Fazer login</span>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Redireciona se já houver sessão ativa
+    if(localStorage.getItem("usuarioLogado")) {
+        window.location.href = "EstoqueConstance.html";
+    }
+
+    function mostrarRegistro() {
+      document.getElementById('loginArea').style.display = 'none';
+      document.getElementById('regArea').style.display = 'block';
+    }
+
+    function fazerLogin() {
+      const u = document.getElementById("username").value;
+      const p = document.getElementById("password").value;
+      
+      if(!u || !p) return alert("Por favor, preencha todos os campos.");
+
+      const users = JSON.parse(localStorage.getItem("usuarios")) || [];
+      const valid = users.find(x => x.nome === u && x.senha === p);
+
+      // Permite o login se o usuário existir ou se for o admin padrão
+      if(valid || (u === "admin" && p === "123")) {
+        localStorage.setItem("usuarioLogado", u);
+        window.location.href = "EstoqueConstance.html";
+      } else {
+        alert("Usuário ou senha incorretos!");
+      }
+    }
+
+    function registrar() {
+      const n = document.getElementById("newName").value;
+      const s = document.getElementById("newPass").value;
+      
+      if(!n || !s) return alert("Preencha todos os campos para cadastrar!");
+      
+      let users = JSON.parse(localStorage.getItem("usuarios")) || [];
+      
+      // Evita usuários duplicados
+      if(users.find(x => x.nome === n)) {
+        return alert("Este nome de usuário já existe!");
+      }
+
+      users.push({nome: n, senha: s});
+      localStorage.setItem("usuarios", JSON.stringify(users));
+      alert("Conta criada com sucesso! Você já pode entrar.");
+      location.reload();
+    }
+  </script>
+</body>
+</html>
