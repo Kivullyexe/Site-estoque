@@ -6,11 +6,14 @@
     <title>Dashboard - Constance</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Melhorias Visuais Específicas */
+    
         body { background: #fdfaf9; }
         
         .welcome-section {
-            background: linear-gradient(135deg, var(--rosa-constance), var(--rosa-escuro));
+            background::root {--rosa-constance: #e5989b;
+  --rosa-escuro: #b56576;
+  --sucesso: #2ecc71;
+}
             padding: 40px 30px;
             border-radius: 30px;
             color: white;
@@ -80,7 +83,7 @@
 </head>
 <body>
     <header>
-        <img id="logo" src="CONSTANDCE.jpeg">
+        <img id="logo" src="CONSTANCE.jpeg">
         <nav>
             <a href="EstoqueConstance.html" style="color: var(--rosa-constance)">DASHBOARD</a>
             <a href="index.html">ESTOQUE</a>
@@ -112,7 +115,7 @@
     </main>
 
     <script>
-        // Verificação de segurança
+        
         if(!localStorage.getItem("usuarioLogado")) window.location.href = "login.html";
         document.getElementById("userName").textContent = localStorage.getItem("usuarioLogado");
 
@@ -156,22 +159,23 @@
                 return;
             }
 
-            // Criar o cabeçalho do CSV
+            
             let csvContent = "Descricao;Fornecedora;Preco;Status\n";
 
-            // Adicionar as linhas (usando ponto e vírgula para abrir direto no Excel PT-BR)
+           
             roupas.forEach(item => {
-                let linha = `${item.descricao};${item.fornecedor};${item.preco};${item.status}`;
+                let linha = `"${item.descricao}";"${item.fornecedor}";"${item.preco}";"${item.status}"`;
                 csvContent += linha + "\n";
             });
 
-            // Criar o arquivo para download
+           
             const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             
             link.setAttribute("href", url);
-            link.setAttribute("download", `estoque_constance_${new Date().toLocaleDateString()}.csv`);
+            const data = new Date().toLocaleDateString().replace(/\//g, "-");
+link.setAttribute("download", `estoque_constance_${data}.csv`);
             link.style.visibility = 'hidden';
             
             document.body.appendChild(link);
